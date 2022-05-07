@@ -1,0 +1,55 @@
+def armar_tablero(palabra):
+    return '.' * len(palabra)
+
+def reducir_intentos():
+    global intentos
+    intentos-=1
+
+def actualizar_tablero(tablero, letra, posicion):
+    # return tablero.Remove(posicion, 1).Insert(posicion, letra);
+    return tablero[:posicion] + letra + tablero[posicion+1:]
+
+
+def validar_input(input):
+    if len(input) == 1 and input.upper() in 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ':
+        return True
+    else:
+        return False
+
+
+def intentar_palabra(tablero, palabra, intento_letra):
+    #for(int i; i < palabra.Length; i++)
+    #    palabra[i]
+    fallido = True
+    for posicion, letra in enumerate(palabra):
+        if intento_letra == letra:
+            fallido = False
+            tablero = actualizar_tablero(tablero, intento_letra, posicion)
+    
+    if fallido:
+        reducir_intentos()
+    
+    return tablero
+
+
+def jugar():
+    palabra = elegir_palabra()
+    tablero = armar_tablero(palabra)
+    
+    while '.' in tablero:
+        input_ = input()
+        while not validar_input(input_):
+            print('IDIOTA ES UNA SOLA, Y TIENE QUE SER UNA LETRA')
+            input_ = input()
+            
+        tablero = intentar_palabra(tablero, palabra, input_.upper())
+        print(F"{tablero}\n Te quedan {intentos} intentos.")
+        if intentos <= 0:
+            print('PERDISTE')
+            break
+    
+    if '.' not in tablero:
+        print('Ganaste!')
+
+intentos = 10
+jugar()
